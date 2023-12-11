@@ -30,7 +30,7 @@ class UIMachine:
         product.set_product_data(name, code, status)
         self.vending_machine.add_product(product)
 
-    def buy_product(self, code, deposit):
+    def buy_product(self, code: int, deposit: int):
         self.vending_machine.buy_product(code, deposit)
 
     def remove_product_by_code(self, code):

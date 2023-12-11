@@ -14,7 +14,7 @@ class VendingMachine:
         self.empty_slots = empty_slots
         self.status = status
         self.money = money
-        self.logs_service = Logs
+        self.logs_service = Logs()
         self.slots = []
 
     def change_status(self, new_status: str):
@@ -46,13 +46,13 @@ class VendingMachine:
     def get_empty_slots(self):
         return self.empty_slots
 
-    def buy_product(self, product_code, deposit):
+    def buy_product(self, product_code: int, deposit: int):
         cost = price_list[product_code]
-        self.logs_service.bought_product(product_code)
+        self.logs_service.bought_product(product_code=product_code)
         self.remove_product_by_code(product_code)
         self.money += cost
         self.give_the_change(deposit - cost)
-        return
+
 
     @staticmethod
     def give_the_change(change):

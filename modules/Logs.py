@@ -1,4 +1,5 @@
 from datetime import datetime
+from modules.Product import Product
 
 
 class Logs:
@@ -6,10 +7,10 @@ class Logs:
     def __init__(self):
         self.logs = []
 
-    def removed_by_code(self, product):
+    def removed_by_code(self, product: Product):
         self.logs.append(f'removed product {product.name} with code {product.code} at {datetime}\n')
 
-    def added_product(self, product):
+    def added_product(self, product: Product):
         self.logs.append(f'added product {product.name} with code {product.code} at {datetime}\n')
 
     def bought_product(self, product_code: int):
