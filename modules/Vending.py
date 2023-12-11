@@ -1,5 +1,5 @@
-from modules.Conditions import VendingConditions
-from validation.Validations import conditions_validated, vending_product_validated
+from modules.Statuses import VendingStatuses
+from validation.Validations import vending_status_validated, product_status_validated
 from modules.Product import Product
 from etc.PriceList import price_list
 from modules.Logs import Logs
@@ -7,49 +7,48 @@ from modules.Logs import Logs
 
 class VendingMachine:
 
-    def __init__(self, name: str, empty_slots: int, condition: VendingConditions, money: int):
+    STATUSES = VendingStatuses.STATUSES
+
+    def __init__(self, name: str, empty_slots: int, status: str, money: int):
         self.name = name
         self.empty_slots = empty_slots
-        self.condition = condition
+        self.status = status
         self.money = money
-        self.conditions = VendingConditions
-        self.logs = Logs
+        self.logs_service = Logs
         self.slots = []
-        return
 
-    def change_condition(self, new_condition: VendingConditions):
-        if conditions_validated(new_condition):
-            self.logs.changed_condition(self.condition, new_condition)
-            self.condition = new_condition
-        return
+    def change_status(self, new_status: str):
+        """change status from old to new with validation"""
+        if vending_status_validated(new_status):
+            self.logs_service.changed_status(self.status, new_status)
+            self.status = new_status
 
     def add_product(self, product: Product):
-        if self.empty_slots > 0 and vending_product_validated(product):
-            self.logs.added_product(product)
+        """add product to vending machine slots with product validation"""
+        if self.empty_slots > 0 and product_status_validated(product):
+            self.logs_service.added_product(product)
             self.slots.append(product)
             self.empty_slots -= 1
-        return
 
-    def show_slots(self):
+    def get_slots(self):
+        """returns amount of slots"""
         return self.slots
 
     def remove_product_by_code(self, product_code):
-        for product in self.slots:
-            if product.code == product_code:
-                self.logs.removed_by_code(product)
-                del product
+        for product_in_slots in self.slots:
+            if product_in_slots.code == product_code:
+                self.logs_service.removed_by_code(product_in_slots)
+                del product_in_slots
                 self.empty_slots += 1
-                break
-        else:
-            print('No such product with that code')
-        return
+                return
+        print('No such product with that code')
 
     def get_empty_slots(self):
         return self.empty_slots
 
     def buy_product(self, product_code, deposit):
         cost = price_list[product_code]
-        self.logs.bought_product(product_code)
+        self.logs_service.bought_product(product_code)
         self.remove_product_by_code(product_code)
         self.money += cost
         self.give_the_change(deposit - cost)
@@ -61,7 +60,7 @@ class VendingMachine:
         return
 
     def show_log(self, *args):
-        self.logs.show_logs([*args])
+        self.logs_service.show_logs(*args)
 
 
 

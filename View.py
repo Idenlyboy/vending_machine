@@ -1,16 +1,14 @@
 from modules.Vending import VendingMachine
-from modules.Conditions import VendingConditions, ProductConditions
+from modules.Statuses import VendingStatuses, ProductStatuses
 from modules.Product import Product
 from etc.PriceList import price_list
 
 
 class UIMachine:
-    def __init__(self, name, empty_slots, condition_index, money):
-        self.vending_conditions = VendingConditions
-        self.product_conditions = ProductConditions
-        condition = self.vending_conditions.get_condition_by_index(condition_index)
-        self.vending_machine = VendingMachine(name, empty_slots, condition, money)
-        return
+
+    def __init__(self, name, empty_slots, status_key, money):
+        self.status = VendingStatuses.STATUSES[status_key]
+        self.vending_machine = VendingMachine(name, empty_slots, self.status, money)
 
     @staticmethod
     def help():
@@ -26,26 +24,23 @@ class UIMachine:
               '\nArguments for show_info(): with/without parameters ("-a" = all, "-l5" = last 5 notes,'
               '"-l20", "-l50", "-l100")')
 
-    def create_and_add_product(self, name, code, condition_index):
-        condition = self.product_conditions.get_condition_by_index(condition_index)
-        product = Product(name, code, condition)
+    def create_and_add_product(self, name, code, status_key):
+        status = ProductStatuses.STATUSES[status_key]
+        product = Product()
+        product.set_product_data(name, code, status)
         self.vending_machine.add_product(product)
-        return
 
     def buy_product(self, code, deposit):
         self.vending_machine.buy_product(code, deposit)
-        return
 
-    def remove_product(self, code):
+    def remove_product_by_code(self, code):
         self.vending_machine.remove_product_by_code(code)
-        return
 
     def show_logs(self, *args):
-        self.vending_machine.logs.show_logs([*args])
-        return
+        self.vending_machine.logs_service.show_logs([*args])
 
-    def get_condition(self):
-        return self.vending_machine.condition
+    def get_status(self):
+        return self.vending_machine.status
 
     def get_empty_slots(self):
         return self.vending_machine.get_empty_slots()
@@ -55,9 +50,8 @@ class UIMachine:
         print(*price_list)
 
     def show_info(self):
-        print(f'{self.vending_machine.name} in "{self.vending_machine.condition}" condition with {self.vending_machine.money} rubles in.'
-              f'positions:\n{self.vending_machine.show_slots()}'
+        print(f'{self.vending_machine.name} in "{self.vending_machine.status}" condition with {self.vending_machine.money} rubles in.'
+              f'positions:\n{self.vending_machine.get_slots()}'
               f'and has {self.vending_machine.get_empty_slots()} empty slots')
-        return
 
 

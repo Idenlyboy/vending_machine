@@ -1,5 +1,5 @@
 from modules.Product import Product
-from validation.Validations import list_products_validated
+from validation.Validations import product_validated
 
 
 class ListProducts:
@@ -7,7 +7,7 @@ class ListProducts:
     def __init__(self, products_arr: list[Product]):
         self.arr = []
         for product in products_arr:
-            if list_products_validated(product):
+            if product_validated(product):
                 self.arr.append(product)
         return
 
