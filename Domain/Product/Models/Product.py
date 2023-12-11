@@ -1,5 +1,5 @@
-from modules.Statuses import ProductStatuses
-from validation.Validations import product_data_validated
+from Domain.Product.Statuses.Statuses import ProductStatuses
+from Domain.Product.Validation.Validations import product_data_validated
 
 
 class Product:

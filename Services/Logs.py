@@ -1,5 +1,5 @@
 from datetime import datetime
-from modules.Product import Product
+from Domain.Product.Models.Product import Product
 
 
 class Logs:

@@ -1,7 +1,8 @@
-from modules.Vending import VendingMachine
-from modules.Statuses import VendingStatuses, ProductStatuses
-from modules.Product import Product
-from etc.PriceList import price_list
+from Domain.VendingMachine.Models.Vending import VendingMachine
+from Domain.VendingMachine.Statuses.Statuses import VendingStatuses
+from Domain.Product.Statuses.Statuses import ProductStatuses
+from Domain.Product.Models.Product import Product
+from Data.PriceList import price_list
 
 
 class UIMachine:
@@ -12,7 +13,7 @@ class UIMachine:
 
     @staticmethod
     def help():
-        print('You can create and add product by function "create_and_add_product()" - '
+        print('You can create and add product by function "create_and_add_product()" - \n'
               'arguments for that function - name, code, condition_index(check documentation)'
               '\nYou can remove product by its code - function remove_product() - only one arg - product code'
               '\nYou can show logs with show_log()'
@@ -42,16 +43,17 @@ class UIMachine:
     def get_status(self):
         return self.vending_machine.status
 
-    def get_empty_slots(self):
-        return self.vending_machine.get_empty_slots()
+    def show_empty_slots(self):
+        print(self.vending_machine.get_empty_slots(), 'empty slots')
 
     @staticmethod
     def show_price_list():
-        print(*price_list)
+        print('code: price\n', price_list, sep='')
 
     def show_info(self):
-        print(f'{self.vending_machine.name} in "{self.vending_machine.status}" condition with {self.vending_machine.money} rubles in.'
-              f'positions:\n{self.vending_machine.get_slots()}'
+        products_in_machine = self.vending_machine.get_products_in()
+        print(f'"{self.vending_machine.name}" vending machine in "{self.vending_machine.status}" status with {self.vending_machine.money} rubles in.\n'
+              f'positions:\n{[i.name for i in products_in_machine]}\n'
               f'and has {self.vending_machine.get_empty_slots()} empty slots')
 
 

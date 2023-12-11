@@ -1,8 +1,8 @@
-from modules.Statuses import VendingStatuses
-from validation.Validations import vending_status_validated, product_status_validated
-from modules.Product import Product
-from etc.PriceList import price_list
-from modules.Logs import Logs
+from Domain.VendingMachine.Statuses.Statuses import VendingStatuses
+from Domain.VendingMachine.Validation.Validations import vending_status_validated, product_status_validated
+from Domain.Product.Models.Product import Product
+from Data.PriceList import price_list
+from Services.Logs import Logs
 
 
 class VendingMachine:
@@ -30,15 +30,15 @@ class VendingMachine:
             self.slots.append(product)
             self.empty_slots -= 1
 
-    def get_slots(self):
-        """returns amount of slots"""
+    def get_products_in(self):
+        """returns all products in machine"""
         return self.slots
 
     def remove_product_by_code(self, product_code):
         for product_in_slots in self.slots:
             if product_in_slots.code == product_code:
                 self.logs_service.removed_by_code(product_in_slots)
-                del product_in_slots
+                self.slots.remove(product_in_slots)
                 self.empty_slots += 1
                 return
         print('No such product with that code')
@@ -52,7 +52,6 @@ class VendingMachine:
         self.remove_product_by_code(product_code)
         self.money += cost
         self.give_the_change(deposit - cost)
-
 
     @staticmethod
     def give_the_change(change):
